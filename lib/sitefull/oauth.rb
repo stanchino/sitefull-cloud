@@ -1,7 +1,39 @@
-require "sitefull/oauth/version"
+require 'forwardable'
 
 module Sitefull
   module Oauth
-    # Your code goes here...
+    class Provider
+      extend Forwardable
+      def_delegators :@provider, :token_options, :authorization_url_options
+
+      def initialize(provider_type, options = {})
+        @provider = provider_class(provider_type).new(options)
+      end
+
+      def authorization_url
+        token.authorization_uri(authorization_url_options)
+      end
+
+      def authorize!(code)
+        token.code = code
+        token.fetch_access_token!
+      end
+
+      def token
+        @token ||= Signet::OAuth2::Client.new(token_options)
+      end
+
+      def credentials
+        token.refresh!
+        @credentials ||= @provider.credentials(token)
+      end
+
+      private
+
+      def provider_class(provider_type)
+        require "sitefull/oauth/#{provider_type}"
+        "Sitefull::Oauth::#{provider_type.capitalize}".constantize
+      end
+    end
   end
 end
