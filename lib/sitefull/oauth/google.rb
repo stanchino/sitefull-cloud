@@ -14,7 +14,7 @@ module Sitefull
       end
 
       def validate(options = {})
-        options = super(options.symbolize_keys)
+        options = super(options)
         options[:authorization_uri] ||= AUTHORIZATION_URI
         options[:scope] ||= Array(SCOPE)
         options[:token_credential_uri] ||= TOKEN_CREDENTIALS_URI
@@ -22,11 +22,11 @@ module Sitefull
       end
 
       def token_options
-        @options.extract!(:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri)
+        @options.select { |k| [:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri].include? k.to_sym }
       end
 
       def authorization_url_options
-        @options.extract!(:state, :login_hint, :redirect_uri).merge({ access_type: 'offline', approval_prompt: 'force', include_granted_scopes: true })
+        @options.select { |k| [:state, :login_hint, :redirect_uri].include? k.to_sym }.merge({ access_type: 'offline', approval_prompt: 'force', include_granted_scopes: true })
       end
 
       def credentials(token)

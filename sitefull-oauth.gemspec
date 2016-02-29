@@ -24,6 +24,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'multi_json'
   spec.add_dependency 'signet'
+  spec.add_dependency 'ms_rest'
+  spec.add_dependency 'aws-sdk'
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"

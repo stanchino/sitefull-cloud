@@ -32,7 +32,7 @@ module Sitefull
 
       def provider_class(provider_type)
         require "sitefull/oauth/#{provider_type}"
-        "Sitefull::Oauth::#{provider_type.capitalize}".constantize
+        Kernel.const_get "Sitefull::Oauth::#{provider_type.capitalize}"
       end
     end
   end

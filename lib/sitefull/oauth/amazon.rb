@@ -1,4 +1,5 @@
 require 'sitefull/oauth/base'
+require 'aws-sdk'
 
 module Sitefull
   module Oauth
@@ -17,7 +18,7 @@ module Sitefull
       end
 
       def credentials(token)
-        fail MISSING_ROLE_ARN unless @options[:role_arn].present?
+        fail MISSING_ROLE_ARN if @options[:role_arn].to_s.empty?
         sts = Aws::STS::Client.new(region: 'us-east-1')
         response = sts.assume_role_with_web_identity(role_arn: @options[:role_arn],
                                                      role_session_name: @options[:session_name],
@@ -27,7 +28,7 @@ module Sitefull
       end
 
       def validate(options = {})
-        options = super(options.symbolize_keys)
+        options = super(options)
         options[:authorization_uri] ||= AUTHORIZATION_URI
         options[:scope] ||= Array(SCOPE)
         options[:token_credential_uri] ||= TOKEN_CREDENTIALS_URI
@@ -36,11 +37,11 @@ module Sitefull
       end
 
       def token_options
-        @options.extract!(:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri)
+        @options.select { |k| [:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri].include? k.to_sym }
       end
 
       def authorization_url_options
-        @options.extract!(:state, :login_hint, :redirect_uri)
+        @options.select { |k| [:state, :login_hint, :redirect_uri].include? k.to_sym }
       end
 
       def callback_uri

@@ -1,4 +1,8 @@
 require 'sitefull/oauth/base'
+require 'ms_rest/credentials/token_provider'
+require 'ms_rest/credentials/string_token_provider'
+require 'ms_rest/credentials/service_client_credentials'
+require 'ms_rest/credentials/token_credentials'
 
 module Sitefull
   module Oauth
@@ -12,12 +16,12 @@ module Sitefull
       MISSING_TENANT_ID = 'Missing Tenant ID'.freeze
 
       def initialize(options = {})
-        fail MISSING_TENANT_ID unless options[:tenant_id].present?
+        fail MISSING_TENANT_ID if options[:tenant_id].nil? || options[:tenant_id].to_s.empty?
         @options = validate(options) || {}
       end
 
       def validate(options = {})
-        options = super(options.symbolize_keys)
+        options = super(options)
         options[:authorization_uri] ||= sprintf(AUTHORIZATION_URI, options[:tenant_id])
         options[:scope] ||= Array(SCOPE)
         options[:token_credential_uri] ||= sprintf(TOKEN_CREDENTIALS_URI, options[:tenant_id])
@@ -25,11 +29,11 @@ module Sitefull
       end
 
       def token_options
-        @options.extract!(:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri)
+        @options.select { |k| [:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri].include? k.to_sym }
       end
 
       def authorization_url_options
-        @options.extract!(:state, :login_hint, :redirect_uri).merge({ resource: 'https://management.core.windows.net/'})
+        @options.select { |k| [:state, :login_hint, :redirect_uri].include? k.to_sym }.merge({ resource: 'https://management.core.windows.net/'})
       end
 
       def credentials(token)
