@@ -2,6 +2,17 @@
 
 This is a gem for authenticating and authorizing against different cloud providers that support OAuth 2.0.
  
+[![Build
+Status](https://travis-ci.org/stanchino/sitefull-oauth.svg?branch=master)](https://travis-ci.org/stanchino/sitefull-oauth)
+[![Code
+Climate](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/gpa.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth)
+[![Test
+Coverage](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/coverage.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth/coverage)
+[![Issue
+Count](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/issue_count.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth)
+[![Dependency
+Status](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088)
+
 ## Installation
 
 Add this line to your application's Gemfile:
