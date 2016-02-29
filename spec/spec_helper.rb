@@ -6,5 +6,9 @@ if ENV['RAILS_ENV'] == 'test'
     add_filter 'version'
   end
 end
+if ENV['CODECLIMATE_REPO_TOKEN']
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
+end
 require 'aws-sdk'
 Aws.config[:stub_responses] = true
