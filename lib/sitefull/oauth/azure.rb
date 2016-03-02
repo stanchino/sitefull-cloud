@@ -15,12 +15,12 @@ module Sitefull
 
       MISSING_TENANT_ID = 'Missing Tenant ID'.freeze
 
-      def initialize(options = {})
-        fail MISSING_TENANT_ID if options[:tenant_id].nil? || options[:tenant_id].to_s.empty?
-        @options = validate(options) || {}
+      def initialize(options = {}, skip_validation = false)
+        @options = skip_validation ? options : validate(options)
       end
 
       def validate(options = {})
+        fail MISSING_TENANT_ID if options[:tenant_id].nil? || options[:tenant_id].to_s.empty?
         options = super(options)
         options[:authorization_uri] ||= sprintf(AUTHORIZATION_URI, options[:tenant_id])
         options[:scope] ||= Array(SCOPE)

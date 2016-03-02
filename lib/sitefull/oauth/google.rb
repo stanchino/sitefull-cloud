@@ -9,8 +9,8 @@ module Sitefull
       SCOPE = %w(https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/compute).freeze
       TOKEN_CREDENTIALS_URI = 'https://www.googleapis.com/oauth2/v3/token'.freeze
 
-      def initialize(options = {})
-        @options = validate(options) || {}
+      def initialize(options = {}, skip_validation = false)
+        @options = skip_validation ? options : validate(options)
       end
 
       def validate(options = {})

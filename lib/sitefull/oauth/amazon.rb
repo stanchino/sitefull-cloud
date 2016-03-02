@@ -13,8 +13,8 @@ module Sitefull
 
       MISSING_ROLE_ARN = 'Missing Role ARN'.freeze
 
-      def initialize(options = {})
-        @options = validate(options) || {}
+      def initialize(options = {}, skip_validation = false)
+        @options = skip_validation ? options : validate(options)
       end
 
       def credentials(token)
