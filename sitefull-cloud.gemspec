@@ -1,19 +1,19 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sitefull/oauth/version'
+require 'sitefull/cloud/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "sitefull-oauth"
-  spec.version       = Sitefull::Oauth::VERSION
+  spec.name          = "sitefull-cloud"
+  spec.version       = Sitefull::Cloud::VERSION
   spec.authors       = ["Stanimir Dimitrov"]
   spec.email         = ["stanchino@gmail.com"]
 
-  spec.summary       = 'Cloud provider OAuth for Ruby applications'
+  spec.summary       = 'A module for automating cloud deployments using different cloud providers'
   spec.description   = <<-eos
-    Allow for authentication against different cloud provider APIs using OAuth authorization code grant flow
+    Configure and manage cloud deployments using different providers
   eos
-  spec.homepage      = 'https://github.com/stanchino/sitefull-oauth'
+  spec.homepage      = 'https://github.com/stanchino/sitefull-cloud'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

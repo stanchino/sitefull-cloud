@@ -1,15 +1,15 @@
 # Sitefull::Oauth
 
-This is a gem for authenticating and authorizing against different cloud providers that support OAuth 2.0.
+This is a gem for automating cloud deployments using different cloud providers. The gem uses Auth 2.0 authorization code grant for authorization whenever it is supported.
  
 [![Build
-Status](https://travis-ci.org/stanchino/sitefull-oauth.svg?branch=master)](https://travis-ci.org/stanchino/sitefull-oauth)
+Status](https://travis-ci.org/stanchino/sitefull-cloud.svg?branch=master)](https://travis-ci.org/stanchino/sitefull-cloud)
 [![Code
-Climate](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/gpa.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth)
+Climate](https://codeclimate.com/github/stanchino/sitefull-cloud/badges/gpa.svg)](https://codeclimate.com/github/stanchino/sitefull-cloud)
 [![Test
-Coverage](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/coverage.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth/coverage)
+Coverage](https://codeclimate.com/github/stanchino/sitefull-cloud/badges/coverage.svg)](https://codeclimate.com/github/stanchino/sitefull-cloud/coverage)
 [![Issue
-Count](https://codeclimate.com/github/stanchino/sitefull-oauth/badges/issue_count.svg)](https://codeclimate.com/github/stanchino/sitefull-oauth)
+Count](https://codeclimate.com/github/stanchino/sitefull-cloud/badges/issue_count.svg)](https://codeclimate.com/github/stanchino/sitefull-cloud)
 [![Dependency
 Status](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088)
 
@@ -18,7 +18,7 @@ Status](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088/badge.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sitefull-oauth'
+gem 'sitefull-cloud'
 ```
 
 And then execute:
@@ -27,11 +27,12 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sitefull-oauth
+    $ gem install sitefull-cloud
 
 ## Usage
 
-### Amazon
+### Authorization
+#### Amazon
   * Setup a new application for Login with Amazon [https://sellercentral.amazon.com/gp/homepage.html](https://sellercentral.amazon.com/gp/homepage.html)
   * Create am IAM role in the AWS Management Console to allow the users access to your resources:
     * Login to the AWS Management Console [https://console.aws.amazon.com/iam/home#home](https://console.aws.amazon.com/iam/home#home)
@@ -41,7 +42,7 @@ Or install it yourself as:
     * Follow the wizard and create the new role
     * Edit the new role and from the "Permissions" tab select policies that the authenticated users will be able to access
 
-Once the Amazon application is configured and the role is setup you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-oauth) gem to generate credentials for the Amazon SDK for Ruby [https://aws.amazon.com/sdk-for-ruby/](https://aws.amazon.com/sdk-for-ruby/)
+Once the Amazon application is configured and the role is setup you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-cloud) gem to generate credentials for the Amazon SDK for Ruby [https://aws.amazon.com/sdk-for-ruby/](https://aws.amazon.com/sdk-for-ruby/)
   * Configure the provider class:
 ```
 options = {
@@ -70,10 +71,10 @@ client = Aws::EC2::Client.new(region: 'us-east-1', credentials: credentials)
 client.describe_instances
 ```
 
-### Azure
+#### Azure
   * Setup a new application in Active Directory following the steps described here [https://azure.microsoft.com/en-us/documentation/articles/active-directory-integrating-applications/](https://azure.microsoft.com/en-us/documentation/articles/active-directory-integrating-applications/)
 
-Once the application is configured you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-oauth) gem to generate credentials for the Microsoft Azure SDK for Ruby [https://github.com/Azure/azure-sdk-for-ruby](https://github.com/Azure/azure-sdk-for-ruby)
+Once the application is configured you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-cloud) gem to generate credentials for the Microsoft Azure SDK for Ruby [https://github.com/Azure/azure-sdk-for-ruby](https://github.com/Azure/azure-sdk-for-ruby)
   * Configure the provider class:
 ```
 options = {
@@ -92,7 +93,7 @@ provider.authorization_url
 ```
 provider.authorize!('The code from the URL parameters when you are redirected to the redirect_uri')
 ```
-  * Generate credentials for the Azure SDK for Ruby [https://github.com/      Azure/azure-sdk-for-ruby](https://github.com/Azure/azure-sdk-for-ruby)
+  * Generate credentials for the Azure SDK for Ruby [https://github.com/Azure/azure-sdk-for-ruby](https://github.com/Azure/azure-sdk-for-ruby)
 ```
 credentials = provider.credentials
 ```
@@ -106,10 +107,10 @@ client.subscription_id = 'The desired subscription ID'
 client.resources.list.value!
 ```
 
-### Google
+#### Google
   * Setup a new OAuth client ID in the Google developer console [https://console.developers.google.com/apis/credentials](https://console.developers.google.com/apis/credentials)
 
-Once the OAuth application is configured you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-oauth) gem to generate credentials for the Google API Client [https://github.com/google/google-api-ruby-client](https://github.com/google/google-api-ruby-client)
+Once the OAuth application is configured you can use the [Sitefull Oauth](https://github.com/stanchino/sitefull-cloud) gem to generate credentials for the Google API Client [https://github.com/google/google-api-ruby-client](https://github.com/google/google-api-ruby-client)
   * Configure the provider class:
 ```
 options = {
@@ -147,7 +148,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/stanchino/sitefull-oauth. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/stanchino/sitefull-cloud. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
