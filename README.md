@@ -1,4 +1,4 @@
-# Sitefull::Oauth
+# Sitefull::Cloud
 
 This is a gem for automating cloud deployments using different cloud providers. The gem uses Auth 2.0 authorization code grant for authorization whenever it is supported.
  
@@ -11,7 +11,7 @@ Coverage](https://codeclimate.com/github/stanchino/sitefull-cloud/badges/coverag
 [![Issue
 Count](https://codeclimate.com/github/stanchino/sitefull-cloud/badges/issue_count.svg)](https://codeclimate.com/github/stanchino/sitefull-cloud)
 [![Dependency
-Status](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d4d0b40a4ec126f7f86088)
+Status](https://www.versioneye.com/user/projects/56d72889d71695003886c336/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d72889d71695003886c336)
 
 ## Installation
 
@@ -51,7 +51,7 @@ options = {
   role_arn: "IAM Role ARN",
   redirect_uri: "One of the Allowed Return URLs for the Amazon Application"
 }
-provider = Sitefull::Oauth::Provider.new('amazon', options) ;
+provider = Sitefull::Cloud::Provider.new('amazon', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
@@ -83,7 +83,7 @@ options = {
   client_secret: "Azure Application Client Secret",
   redirect_uri: "One of the Reply URLs for the Azure Application"
 }
-provider = Sitefull::Oauth::Provider.new('azure', options) ;
+provider = Sitefull::Cloud::Provider.new('azure', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
@@ -118,7 +118,7 @@ options = {
   client_secret: "Google OAuth Client Secret",
   redirect_uri: "One of the Authorized redirect URIs"
 }
-provider = Sitefull::Oauth::Provider.new('google', options) ;
+provider = Sitefull::Cloud::Provider.new('google', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
