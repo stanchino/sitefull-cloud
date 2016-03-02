@@ -1,8 +1,8 @@
-require 'sitefull/oauth/base'
+require 'sitefull/cloud/base'
 require 'aws-sdk'
 
 module Sitefull
-  module Oauth
+  module Cloud
     class Amazon < Base
 
       AUTHORIZATION_URI = 'https://www.amazon.com/ap/oa'.freeze

@@ -1,7 +1,7 @@
 require 'forwardable'
 
 module Sitefull
-  module Oauth
+  module Cloud
     class Provider
       extend Forwardable
       def_delegators :@provider, :token_options, :authorization_url_options
@@ -33,8 +33,8 @@ module Sitefull
       private
 
       def provider_class(provider_type)
-        require "sitefull/oauth/#{provider_type}"
-        Kernel.const_get "Sitefull::Oauth::#{provider_type.capitalize}"
+        require "sitefull/cloud/#{provider_type}"
+        Kernel.const_get "Sitefull::Cloud::#{provider_type.capitalize}"
       end
     end
   end

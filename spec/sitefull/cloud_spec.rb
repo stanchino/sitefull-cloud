@@ -1,12 +1,12 @@
 require 'spec_helper'
 require 'shared_examples/provider'
-require 'sitefull/oauth'
-require 'sitefull/oauth/azure'
+require 'sitefull/cloud'
+require 'sitefull/cloud/azure'
 require 'aws-sdk'
 
-RSpec.describe Sitefull::Oauth do
-  describe Sitefull::Oauth::Base do
-    it { expect { subject.callback_uri }.to raise_error(RuntimeError, Sitefull::Oauth::Base::MISSING_CALLBACK_URI) }
+RSpec.describe Sitefull::Cloud do
+  describe Sitefull::Cloud::Base do
+    it { expect { subject.callback_uri }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_CALLBACK_URI) }
   end
 
   describe 'Google' do
@@ -27,7 +27,7 @@ RSpec.describe Sitefull::Oauth do
   end
 
   describe 'Azure' do
-    it { expect { Sitefull::Oauth::Provider.new(:azure) }.to raise_error(RuntimeError, Sitefull::Oauth::Azure::MISSING_TENANT_ID) }
+    it { expect { Sitefull::Cloud::Provider.new(:azure) }.to raise_error(RuntimeError, Sitefull::Cloud::Azure::MISSING_TENANT_ID) }
     it_behaves_like 'provider with invalid options', :azure, {tenant_id: :tenant_id}
     it_behaves_like 'provider with valid options', :azure, {tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}
     it_behaves_like 'provider with valid options', :azure, {tenant_id: :tenant_id, base_uri: 'http://localhost/'}

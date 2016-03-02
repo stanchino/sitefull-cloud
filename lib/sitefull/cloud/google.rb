@@ -1,7 +1,7 @@
-require 'sitefull/oauth/base'
+require 'sitefull/cloud/base'
 
 module Sitefull
-  module Oauth
+  module Cloud
     class Google < Base
 
       AUTHORIZATION_URI = 'https://accounts.google.com/o/oauth2/auth'.freeze
