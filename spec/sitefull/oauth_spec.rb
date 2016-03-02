@@ -13,6 +13,8 @@ RSpec.describe Sitefull::Oauth do
     it_behaves_like 'provider with invalid options', :google, {}
     it_behaves_like 'provider with valid options', :google, {redirect_uri: 'http://localhost/oauth/google/callback'}
     it_behaves_like 'provider with valid options', :google, {base_uri: 'http://localhost/'}
+    it_behaves_like 'provider with valid options', :google, {token: '{"access_token": "access_token"}', redirect_uri: 'http://localhost/oauth/google/callback'}, true
+    it_behaves_like 'provider with valid options', :google, {token: '{"access_token": "access_token"}', base_uri: 'http://localhost/'}, true
   end
 
   describe 'Amazon' do
@@ -20,6 +22,8 @@ RSpec.describe Sitefull::Oauth do
     it_behaves_like 'provider with invalid options', :amazon, {}
     it_behaves_like 'provider with valid options', :amazon, {role_arn: :role_arn, redirect_uri: 'http://localhost/oauth/amazon/callback'}
     it_behaves_like 'provider with valid options', :amazon, {role_arn: :role_arn, base_uri: 'http://localhost/'}
+    it_behaves_like 'provider with valid options', :amazon, {token: '{"access_token": "access_token"}', role_arn: :role_arn, redirect_uri: 'http://localhost/oauth/amazon/callback'}, true
+    it_behaves_like 'provider with valid options', :amazon, {token: '{"access_token": "access_token"}', role_arn: :role_arn, base_uri: 'http://localhost/'}, true
   end
 
   describe 'Azure' do
@@ -27,5 +31,7 @@ RSpec.describe Sitefull::Oauth do
     it_behaves_like 'provider with invalid options', :azure, {tenant_id: :tenant_id}
     it_behaves_like 'provider with valid options', :azure, {tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}
     it_behaves_like 'provider with valid options', :azure, {tenant_id: :tenant_id, base_uri: 'http://localhost/'}
+    it_behaves_like 'provider with valid options', :azure, {token: '{"access_token": "access_token"}', tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}, true
+    it_behaves_like 'provider with valid options', :azure, {token: '{"access_token": "access_token"}', tenant_id: :tenant_id, base_uri: 'http://localhost/'}, true
   end
 end

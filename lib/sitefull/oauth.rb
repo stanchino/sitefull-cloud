@@ -7,8 +7,9 @@ module Sitefull
       def_delegators :@provider, :token_options, :authorization_url_options
 
       def initialize(provider_type, options = {})
-        @token = Signet::OAuth2::Client.new(JSON.parse options[:token]) if options[:token].present?
-        @provider = provider_class(provider_type).new(options, options[:token].present?)
+        token_set = !options[:token].to_s.empty?
+        token(JSON.parse options[:token]) if token_set
+        @provider = provider_class(provider_type).new(options, token_set)
       end
 
       def authorization_url
@@ -20,8 +21,8 @@ module Sitefull
         token.fetch_access_token!
       end
 
-      def token
-        @token ||= Signet::OAuth2::Client.new(token_options)
+      def token(token_data = nil)
+        @token ||= Signet::OAuth2::Client.new(token_data.nil? ? token_options : token_data)
       end
 
       def credentials

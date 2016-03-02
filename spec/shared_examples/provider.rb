@@ -13,7 +13,7 @@ RSpec.shared_examples 'provider with invalid options' do |provider, options|
   it { expect { Sitefull::Oauth::Provider.new(provider, invalid_base_uri_options) }.to raise_error(RuntimeError, Sitefull::Oauth::Base::MISSING_BASE_URI_SCHEME) }
 end
 
-RSpec.shared_examples 'provider with valid options' do |provider, options|
+RSpec.shared_examples 'provider with valid options' do |provider, options, skip_authorization_url_check|
   let(:valid_options) { options.merge({client_id: :client_id, client_secret: :client_secret}) }
 
   context 'initialize' do
@@ -23,8 +23,10 @@ RSpec.shared_examples 'provider with valid options' do |provider, options|
   describe 'methods' do
     subject { Sitefull::Oauth::Provider.new(provider, valid_options) }
 
-    context 'generates authorization URL' do
-      it { expect(subject.authorization_url).not_to be_nil }
+    unless skip_authorization_url_check
+      context 'generates authorization URL' do
+        it { expect(subject.authorization_url).not_to be_nil }
+      end
     end
 
     context 'generates a token' do
