@@ -950,10 +950,6 @@ Style/SpaceAfterComma:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
   Enabled: false
 
-Style/SpaceAroundKeyword:
-  Description: 'Use spaces around keywords.'
-  Enabled: false
-
 Style/SpaceAfterMethodName:
   Description: >-
                  Do not put a space between a method name and the opening
