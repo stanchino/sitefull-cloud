@@ -12,4 +12,10 @@ if ENV['CODECLIMATE_REPO_TOKEN']
 end
 require 'aws-sdk'
 require 'sitefull-cloud'
-Aws.config[:stub_responses] = true
+require 'support/aws'
+require 'support/google'
+require 'support/provider_helper'
+
+RSpec.configure do |config|
+  config.include ProviderHelper, type: :provider
+end

@@ -1,6 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
 require 'sitefull-cloud/version'
 
 Gem::Specification.new do |spec|
@@ -24,8 +25,11 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'multi_json'
   spec.add_dependency 'signet'
-  spec.add_dependency 'ms_rest'
+  spec.add_dependency 'google-api-client'
   spec.add_dependency 'aws-sdk'
+  spec.add_dependency 'azure_mgmt_compute'
+  spec.add_dependency 'azure_mgmt_resources'
+  spec.add_dependency 'azure_mgmt_network'
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"

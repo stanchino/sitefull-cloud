@@ -1,20 +1,10 @@
 require 'spec_helper'
 require 'shared_examples/auth'
-require 'sitefull-cloud/auth'
-require 'sitefull-cloud/auth/azure'
 require 'aws-sdk'
 
 RSpec.describe Sitefull::Cloud::Auth do
   describe Sitefull::Auth::Base do
     it { expect { subject.callback_uri }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CALLBACK_URI) }
-  end
-
-  describe 'Google' do
-    it_behaves_like 'auth provider with invalid options', :google, {}
-    it_behaves_like 'auth provider with valid options', :google, {redirect_uri: 'http://localhost/oauth/google/callback'}
-    it_behaves_like 'auth provider with valid options', :google, {base_uri: 'http://localhost/'}
-    it_behaves_like 'auth provider with valid options', :google, {token: '{"access_token": "access_token"}', redirect_uri: 'http://localhost/oauth/google/callback'}, true
-    it_behaves_like 'auth provider with valid options', :google, {token: '{"access_token": "access_token"}', base_uri: 'http://localhost/'}, true
   end
 
   describe 'Amazon' do
@@ -27,11 +17,21 @@ RSpec.describe Sitefull::Cloud::Auth do
   end
 
   describe 'Azure' do
+    require 'sitefull-cloud/auth/azure'
+
     it { expect { Sitefull::Cloud::Auth.new(:azure) }.to raise_error(RuntimeError, Sitefull::Auth::Azure::MISSING_TENANT_ID) }
     it_behaves_like 'auth provider with invalid options', :azure, {tenant_id: :tenant_id}
     it_behaves_like 'auth provider with valid options', :azure, {tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}
     it_behaves_like 'auth provider with valid options', :azure, {tenant_id: :tenant_id, base_uri: 'http://localhost/'}
     it_behaves_like 'auth provider with valid options', :azure, {token: '{"access_token": "access_token"}', tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}, true
     it_behaves_like 'auth provider with valid options', :azure, {token: '{"access_token": "access_token"}', tenant_id: :tenant_id, base_uri: 'http://localhost/'}, true
+  end
+
+  describe 'Google' do
+    it_behaves_like 'auth provider with invalid options', :google, {}
+    it_behaves_like 'auth provider with valid options', :google, {redirect_uri: 'http://localhost/oauth/google/callback'}
+    it_behaves_like 'auth provider with valid options', :google, {base_uri: 'http://localhost/'}
+    it_behaves_like 'auth provider with valid options', :google, {token: '{"access_token": "access_token"}', redirect_uri: 'http://localhost/oauth/google/callback'}, true
+    it_behaves_like 'auth provider with valid options', :google, {token: '{"access_token": "access_token"}', base_uri: 'http://localhost/'}, true
   end
 end
