@@ -1,5 +1,5 @@
 module Sitefull
-  module Cloud
+  module Auth
     class Base
 
       MISSING_BASE_URI = 'Missing base URL and redirect URL'.freeze

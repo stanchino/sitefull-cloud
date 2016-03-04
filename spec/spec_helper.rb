@@ -11,4 +11,5 @@ if ENV['CODECLIMATE_REPO_TOKEN']
   CodeClimate::TestReporter.start
 end
 require 'aws-sdk'
+require 'sitefull-cloud'
 Aws.config[:stub_responses] = true

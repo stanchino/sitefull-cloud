@@ -1,27 +1,27 @@
-require 'sitefull/cloud/base'
+require 'sitefull-cloud/auth/base'
 require 'signet/oauth_2/client'
 
-RSpec.shared_examples 'provider with invalid options' do |provider, options|
+RSpec.shared_examples 'auth provider with invalid options' do |provider, options|
   let(:invalid_options) { options.merge({client_id: :client_id, client_secret: :client_secret}) }
   let(:invalid_redirect_uri_options) { options.merge({client_id: :client_id, client_secret: :client_secret, redirect_uri: :redirect_uri}) }
   let(:invalid_base_uri_options) { options.merge({client_id: :client_id, client_secret: :client_secret, base_uri: :base_uri}) }
 
-  it { expect { Sitefull::Cloud::Provider.new(provider, invalid_options.reject { |k| k == :client_id }) }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_CLIENT_ID) }
-  it { expect { Sitefull::Cloud::Provider.new(provider, invalid_options.reject { |k| k == :client_secret }) }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_CLIENT_SECRET) }
-  it { expect { Sitefull::Cloud::Provider.new(provider, invalid_options.reject { |k| k == :base_uri || k == :redirect_uri}) }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_BASE_URI) }
-  it { expect { Sitefull::Cloud::Provider.new(provider, invalid_redirect_uri_options) }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_REDIRECT_URI_SCHEME) }
-  it { expect { Sitefull::Cloud::Provider.new(provider, invalid_base_uri_options) }.to raise_error(RuntimeError, Sitefull::Cloud::Base::MISSING_BASE_URI_SCHEME) }
+  it { expect { Sitefull::Cloud::Auth.new(provider, invalid_options.reject { |k| k == :client_id }) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CLIENT_ID) }
+  it { expect { Sitefull::Cloud::Auth.new(provider, invalid_options.reject { |k| k == :client_secret }) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CLIENT_SECRET) }
+  it { expect { Sitefull::Cloud::Auth.new(provider, invalid_options.reject { |k| k == :base_uri || k == :redirect_uri}) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_BASE_URI) }
+  it { expect { Sitefull::Cloud::Auth.new(provider, invalid_redirect_uri_options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_REDIRECT_URI_SCHEME) }
+  it { expect { Sitefull::Cloud::Auth.new(provider, invalid_base_uri_options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_BASE_URI_SCHEME) }
 end
 
-RSpec.shared_examples 'provider with valid options' do |provider, options, skip_authorization_url_check|
+RSpec.shared_examples 'auth provider with valid options' do |provider, options, skip_authorization_url_check|
   let(:valid_options) { options.merge({client_id: :client_id, client_secret: :client_secret}) }
 
   context 'initialize' do
-    it { expect { Sitefull::Cloud::Provider.new(provider, valid_options) }.not_to raise_error }
+    it { expect { Sitefull::Cloud::Auth.new(provider, valid_options) }.not_to raise_error }
   end
 
   describe 'methods' do
-    subject { Sitefull::Cloud::Provider.new(provider, valid_options) }
+    subject { Sitefull::Cloud::Auth.new(provider, valid_options) }
 
     unless skip_authorization_url_check
       context 'generates authorization URL' do

@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sitefull/cloud/version'
+require 'sitefull-cloud/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "sitefull-cloud"
@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "shoulda-matchers"
+  spec.add_development_dependency "activesupport"
 end

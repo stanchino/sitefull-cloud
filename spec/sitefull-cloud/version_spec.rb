@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'sitefull/cloud/version'
+require 'sitefull-cloud/version'
 
 RSpec.describe Sitefull::Cloud do
 

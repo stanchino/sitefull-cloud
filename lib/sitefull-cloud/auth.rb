@@ -2,7 +2,7 @@ require 'forwardable'
 
 module Sitefull
   module Cloud
-    class Provider
+    class Auth
       extend Forwardable
       def_delegators :@provider, :token_options, :authorization_url_options
 
@@ -33,8 +33,8 @@ module Sitefull
       private
 
       def provider_class(provider_type)
-        require "sitefull/cloud/#{provider_type}"
-        Kernel.const_get "Sitefull::Cloud::#{provider_type.capitalize}"
+        require "sitefull-cloud/auth/#{provider_type}"
+        Kernel.const_get "Sitefull::Auth::#{provider_type.capitalize}"
       end
     end
   end

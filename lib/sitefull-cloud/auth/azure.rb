@@ -1,11 +1,11 @@
-require 'sitefull/cloud/base'
+require 'sitefull-cloud/auth/base'
 require 'ms_rest/credentials/token_provider'
 require 'ms_rest/credentials/string_token_provider'
 require 'ms_rest/credentials/service_client_credentials'
 require 'ms_rest/credentials/token_credentials'
 
 module Sitefull
-  module Cloud
+  module Auth
     class Azure < Base
 
       AUTHORIZATION_URI = 'https://login.microsoftonline.com/%s/oauth2/authorize'.freeze
