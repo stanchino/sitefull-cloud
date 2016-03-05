@@ -2,15 +2,15 @@ module Sitefull
   module Provider
     module Mock
       def regions
-        Array.new(5) { |i| OpenStruct.new(id: "region-id-#{i}", name: "region-name-#{i}") }
+        mock_list 'region'
       end
 
       def machine_types(_region)
-        Array.new(5) { |i| OpenStruct.new(id: "machine-type-id-#{i}", name: "machine-type-name-#{i}") }
+        mock_list 'machine-type'
       end
 
       def images(_os)
-        Array.new(5) { |i| OpenStruct.new(id: "image-id-#{i}", name: "image-name-#{i}") }
+        mock_list 'image'
       end
 
       def create_network
@@ -30,6 +30,11 @@ module Sitefull
 
       def valid?
         true
+      end
+
+      private
+      def mock_list(prefix)
+        Array.new(5) { |i| OpenStruct.new(id: "#{prefix}-id-#{i}", name: "#{prefix}-name-#{i}") }
       end
     end
   end
