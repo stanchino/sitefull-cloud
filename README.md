@@ -51,7 +51,7 @@ options = {
   role_arn: "IAM Role ARN",
   redirect_uri: "One of the Allowed Return URLs for the Amazon Application"
 }
-provider = Sitefull::Cloud::Provider.new('amazon', options) ;
+provider = Sitefull::Cloud::Auth.new('amazon', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
@@ -83,7 +83,7 @@ options = {
   client_secret: "Azure Application Client Secret",
   redirect_uri: "One of the Reply URLs for the Azure Application"
 }
-provider = Sitefull::Cloud::Provider.new('azure', options) ;
+provider = Sitefull::Cloud::Auth.new('azure', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
@@ -118,7 +118,7 @@ options = {
   client_secret: "Google OAuth Client Secret",
   redirect_uri: "One of the Authorized redirect URIs"
 }
-provider = Sitefull::Cloud::Provider.new('google', options) ;
+provider = Sitefull::Cloud::Auth.new('google', options) ;
 ```
   * Generate the authorization URL and open it in a web browser
 ```
@@ -140,11 +140,28 @@ client.authorization = credentials
 client.list_images('A project the authenticated user can access')
 ```
 
+### Providers
+
+If you already have obtained a token for one of the providers you can use `Sitefull::Cloud::Provider` to perform basic operations.
+```
+provider = Sitefull::Cloud::Provider.new(:amazon, token: token, region: 'us-east-1')
+provider.regions # Returns a list of regions
+provider.machine_types(region) # Returns a list of regions
+....
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Testing
+
+To mock the provider APIs just add the following to your `rails_helper.rb` or `spec_helper.rb` file:
+```
+Sitefull::Cloud.mock!
+```
 
 ## Contributing
 
