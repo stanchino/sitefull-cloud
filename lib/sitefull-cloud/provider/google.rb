@@ -21,8 +21,8 @@ module Sitefull
         @regions ||= connection.list_zones(project_name).items
       end
 
-      def flavors(zone)
-        @flavors ||= connection.list_machine_types(project_name, zone).items
+      def machine_types(zone)
+        @machine_types ||= connection.list_machine_types(project_name, zone).items
       rescue ::Google::Apis::ClientError
         []
       end
@@ -50,7 +50,7 @@ module Sitefull
       end
 
       def create_instance(deployment)
-        instance = ::Google::Apis::ComputeV1::Instance.new(name: "sitefull-deployment-#{deployment.id}", machine_type: deployment.flavor,
+        instance = ::Google::Apis::ComputeV1::Instance.new(name: "sitefull-deployment-#{deployment.id}", machine_type: deployment.machine_type,
                                                            disks: [{ boot: true, autoDelete: true, initialize_params: { source_image: deployment.image } }],
                                                            network_interfaces: [{ network: deployment.network_id, access_configs: [{ name: 'default' }] }])
         connection.insert_instance(project_name, deployment.region, instance).target_link

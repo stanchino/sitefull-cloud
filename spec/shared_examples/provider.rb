@@ -3,8 +3,8 @@ RSpec.shared_examples 'cloud provider' do
     it { expect(subject.regions).not_to be_empty }
   end
 
-  describe 'and generates a list of flavors' do
-    it { expect(subject.flavors(any_args)).not_to be_empty }
+  describe 'and generates a list of machine_types' do
+    it { expect(subject.machine_types(any_args)).not_to be_empty }
   end
 
   describe 'and generates a list of images' do
@@ -32,13 +32,18 @@ RSpec.shared_examples 'cloud provider' do
   end
 
   describe 'and creates an instance' do
-    it { expect(subject.create_instance(double(id: :id, region: :region, image: :image, flavor: :flavor, network_id: :network_id, key_name: :key_name))).not_to be_nil }
+    it { expect(subject.create_instance(double(id: :id, region: :region, image: :image, machine_type: :machine_type, network_id: :network_id, key_name: :key_name))).not_to be_nil }
+  end
+
+  describe 'lists the required options' do
+    let(:expected) { Kernel.const_get("Sitefull::Provider::#{type.capitalize}::REQUIRED_OPTIONS") }
+    it { expect(subject.class.required_options_for(type)).to match_array expected }
   end
 
   describe 'without type' do
     let(:type) { nil }
     let(:options) { nil }
-    [:regions, :flavors].each do |method|
+    [:regions, :machine_types].each do |method|
       context "returns an empty list for #{method}" do
         it { expect(subject.send(method)).to eq [] }
       end
@@ -50,4 +55,15 @@ RSpec.shared_examples 'cloud provider' do
       it { expect(subject.valid?).to be_falsey }
     end
   end
+end
+
+RSpec.shared_examples 'mocked cloud provider' do
+  it { expect { subject.regions }.not_to raise_error }
+  it { expect { subject.machine_types(any_args) }.not_to raise_error }
+  it { expect { subject.images(any_args) }.not_to raise_error }
+  it { expect { subject.create_network }.not_to raise_error }
+  it { expect { subject.create_key(any_args) }.not_to raise_error }
+  it { expect { subject.create_firewall_rules(any_args) }.not_to raise_error }
+  it { expect { subject.create_instance(any_args) }.not_to raise_error }
+  it { expect { subject.valid? }.not_to raise_error }
 end

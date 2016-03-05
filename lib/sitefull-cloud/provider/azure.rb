@@ -15,7 +15,7 @@ module Sitefull
         ['us']
       end
 
-      def flavors(region)
+      def machine_types(region)
         ["machine-type-#{region}"]
       end
 

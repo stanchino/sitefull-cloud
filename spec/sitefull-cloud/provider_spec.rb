@@ -57,9 +57,9 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
     it_behaves_like 'cloud provider'
 
-    context 'flavors list is empty on error' do
+    context 'machine types list is empty on error' do
       before { expect_any_instance_of(::Google::Apis::ComputeV1::ComputeService).to receive(:list_machine_types).and_raise(Google::Apis::ClientError.new('error')) }
-      it { expect(subject.flavors(any_args)).to eq [] }
+      it { expect(subject.machine_types(any_args)).to eq [] }
     end
 
     context 'is not valid when there is an error' do
@@ -78,5 +78,12 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
     let(:type) { 'azure' }
     let(:options) { { token: '{"access_key": "access_key"}', role_arn: 'role', foo: :bar } }
     it_behaves_like 'cloud provider'
+  end
+
+  describe 'returns all required options' do
+    let(:type) { nil }
+    let(:options) { nil }
+    let(:expected) { Sitefull::Cloud::Provider::PROVIDERS.map { |provider| Kernel.const_get("Sitefull::Provider::#{provider.capitalize}::REQUIRED_OPTIONS") }.flatten }
+    it { expect(subject.class.all_required_options).to match_array expected }
   end
 end

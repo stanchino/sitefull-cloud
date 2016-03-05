@@ -6,26 +6,26 @@ module Sitefull
       include Networking
 
       REQUIRED_OPTIONS = [:role_arn].freeze
-      FLAVORS = %w(t2.nano t2.micro t2.small t2.medium t2.large m4.large m4.xlarge m4.2xlarge m4.4xlarge m4.10xlarge m3.medium m3.large m3.xlarge m3.2xlarge).freeze
+      MACHINE_TYPES = %w(t2.nano t2.micro t2.small t2.medium t2.large m4.large m4.xlarge m4.2xlarge m4.4xlarge m4.10xlarge m3.medium m3.large m3.xlarge m3.2xlarge).freeze
 
       DEFAULT_REGION = 'us-east-1'.freeze
-      DEFAULT_FLAVOR = 't2.micro'.freeze
 
       def connection
-        @connection ||= ::Aws::EC2::Client.new(region: DEFAULT_REGION, credentials: credentials)
+        @connection ||= ::Aws::EC2::Client.new(region: options[:region] || DEFAULT_REGION, credentials: credentials)
       end
 
-      def regions(*_args)
-        @regions ||= connection.describe_regions.regions
+      def regions
+        @regions ||= connection.describe_regions.regions.map { |r| OpenStruct.new(id: r.region_name, name: r.region_name) }
       end
 
-      def flavors(*_args)
-        FLAVORS
+      def machine_types(_)
+        MACHINE_TYPES.map { |mt| OpenStruct.new(id: mt, name: mt) }
       end
 
       def images(os)
         # IMAGES[os.to_sym]
-        connection.describe_images(filters: [{ name: 'name', values: ["#{os}*", "#{os.downcase}*"] }, { name: 'is-public', values: ['true'] }, { name: 'virtualization-type', values: ['hvm'] }]).images
+        filters = [{ name: 'name', values: ["#{os}*", "#{os.downcase}*"] }, { name: 'is-public', values: ['true'] }, { name: 'virtualization-type', values: ['hvm'] }]
+        connection.describe_images(filters: filters).images.map { |i| OpenStruct.new(id: i.image_id, name: i.name) }
       end
 
       def create_network
@@ -46,7 +46,7 @@ module Sitefull
 
       # Uses http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#run_instances-instance_method
       def create_instance(deployment)
-        connection.run_instances(image_id: deployment.image, instance_type: deployment.flavor, subnet_id: deployment.network_id, key_name: deployment.key_name, security_group_ids: [security_group.group_id], min_count: 1, max_count: 1).instances.first.instance_id
+        connection.run_instances(image_id: deployment.image, instance_type: deployment.machine_type, subnet_id: deployment.network_id, key_name: deployment.key_name, security_group_ids: [security_group.group_id], min_count: 1, max_count: 1).instances.first.instance_id
       end
 
       def valid?

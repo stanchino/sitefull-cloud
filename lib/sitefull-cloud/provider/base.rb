@@ -5,7 +5,7 @@ module Sitefull
         []
       end
 
-      def flavors(*_args)
+      def machine_types(*_args)
         []
       end
 
