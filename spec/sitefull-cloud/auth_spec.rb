@@ -5,8 +5,25 @@ RSpec.describe Sitefull::Cloud::Auth do
   describe Sitefull::Auth::Base do
     require 'sitefull-cloud/auth/base'
 
-    subject { Sitefull::Auth::Base.new(client_id: 'client_id', client_secret: 'client_secret', base_uri: 'http://localhost/') }
-    it { expect { subject.callback_uri }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CALLBACK_URI) }
+    context 'without callback URI' do
+      let(:options) { { client_id: 'client_id', client_secret: 'client_secret', base_uri: 'http://localhost/' } }
+      it { expect { Sitefull::Auth::Base.new(options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CALLBACK_URI) }
+    end
+
+    context 'without authorization URI' do
+      let(:options) { { client_id: 'client_id', client_secret: 'client_secret', redirect_uri: 'http://localhost/oauth/base/callback' } }
+      it { expect { Sitefull::Auth::Base.new(options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_AUTHORIZATION_URI) }
+    end
+
+    context 'without scope' do
+      let(:options) { { client_id: 'client_id', client_secret: 'client_secret', redirect_uri: 'http://localhost/oauth/base/callback', authorization_uri: 'http://auth' } }
+      it { expect { Sitefull::Auth::Base.new(options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_SCOPE) }
+    end
+
+    context 'without Token Credentials URI' do
+      let(:options) { { client_id: 'client_id', client_secret: 'client_secret', redirect_uri: 'http://localhost/oauth/base/callback', authorization_uri: 'http://auth', scope: 'scope' } }
+      it { expect { Sitefull::Auth::Base.new(options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_TOKEN_CREDENTIALS_URI) }
+    end
   end
 
   describe 'Amazon' do

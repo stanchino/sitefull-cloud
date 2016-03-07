@@ -35,7 +35,7 @@ module Sitefull
         fail MISSING_CALLBACK_URI
       end
 
-      def authorization_uri
+      def authorization_uri(_)
         fail MISSING_AUTHORIZATION_URI
       end
 
@@ -43,7 +43,7 @@ module Sitefull
         fail MISSING_SCOPE
       end
 
-      def token_credentials_uri
+      def token_credentials_uri(_)
         fail MISSING_TOKEN_CREDENTIALS_URI
       end
       private
