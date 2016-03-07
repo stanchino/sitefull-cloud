@@ -9,14 +9,6 @@ module Sitefull
       SCOPE = %w(https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/compute).freeze
       TOKEN_CREDENTIALS_URI = 'https://www.googleapis.com/oauth2/v3/token'.freeze
 
-      def validate(options = {})
-        options = super(options)
-        options[:authorization_uri] ||= AUTHORIZATION_URI
-        options[:scope] ||= Array(SCOPE)
-        options[:token_credential_uri] ||= TOKEN_CREDENTIALS_URI
-        options
-      end
-
       def authorization_url_options
         super.merge({ access_type: 'offline', approval_prompt: 'force', include_granted_scopes: true })
       end
@@ -27,6 +19,18 @@ module Sitefull
 
       def callback_uri
         CALLBACK_URI
+      end
+
+      def authorization_uri(_)
+        AUTHORIZATION_URI
+      end
+
+      def scope
+        SCOPE
+      end
+
+      def token_credentials_uri(_)
+        TOKEN_CREDENTIALS_URI
       end
     end
   end

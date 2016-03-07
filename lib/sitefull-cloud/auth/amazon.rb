@@ -28,16 +28,20 @@ module Sitefull
         Aws::Credentials.new(*response.credentials.to_h.values_at(:access_key_id, :secret_access_key, :session_token))
       end
 
-      def validate(options = {})
-        options = super(options)
-        options[:authorization_uri] ||= AUTHORIZATION_URI
-        options[:scope] ||= Array(SCOPE)
-        options[:token_credential_uri] ||= TOKEN_CREDENTIALS_URI
-        options
-      end
-
       def callback_uri
         CALLBACK_URI
+      end
+
+      def authorization_uri(_)
+        AUTHORIZATION_URI
+      end
+
+      def scope
+        SCOPE
+      end
+
+      def token_credentials_uri(_)
+        TOKEN_CREDENTIALS_URI
       end
     end
   end

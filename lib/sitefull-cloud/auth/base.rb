@@ -2,12 +2,15 @@ module Sitefull
   module Auth
     class Base
 
+      MISSING_AUTHORIZATION_URI = 'Missing Authorization URL'.freeze
       MISSING_BASE_URI = 'Missing base URL and redirect URL'.freeze
       MISSING_BASE_URI_SCHEME = 'Base URL must be an absolute URL'.freeze
       MISSING_CALLBACK_URI = 'No callback URI specified'.freeze
       MISSING_CLIENT_ID = 'Missing Client ID'.freeze
       MISSING_CLIENT_SECRET = 'Missing Client Secret'.freeze
       MISSING_REDIRECT_URI_SCHEME = 'Redirect URL must be an absolute URL'.freeze
+      MISSING_SCOPE = 'Missing scope'.freeze
+      MISSING_TOKEN_CREDENTIALS_URI = 'Missing Token Credentials URL'.freeze
 
       def initialize(options = {})
         @options = validate(options)
@@ -32,11 +35,25 @@ module Sitefull
         fail MISSING_CALLBACK_URI
       end
 
+      def authorization_uri
+        fail MISSING_AUTHORIZATION_URI
+      end
+
+      def scope
+        fail MISSING_SCOPE
+      end
+
+      def token_credentials_uri
+        fail MISSING_TOKEN_CREDENTIALS_URI
+      end
       private
 
       def process(options = {})
         options[:redirect_uri] ||= default_redirect_uri(options) if options[:token].to_s.empty?
         options[:token] = JSON.parse options[:token] unless options[:token].to_s.empty?
+        options[:authorization_uri] ||= authorization_uri(options)
+        options[:scope] ||= Array(scope)
+        options[:token_credential_uri] ||= token_credentials_uri(options)
         options
       end
 

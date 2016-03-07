@@ -17,11 +17,7 @@ module Sitefull
 
       def validate(options = {})
         fail MISSING_TENANT_ID if options[:tenant_id].nil? || options[:tenant_id].to_s.empty?
-        options = super(options)
-        options[:authorization_uri] ||= sprintf(AUTHORIZATION_URI, options[:tenant_id])
-        options[:scope] ||= Array(SCOPE)
-        options[:token_credential_uri] ||= sprintf(TOKEN_CREDENTIALS_URI, options[:tenant_id])
-        options
+        super(options)
       end
 
       def authorization_url_options
@@ -35,6 +31,18 @@ module Sitefull
 
       def callback_uri
         CALLBACK_URI
+      end
+
+      def authorization_uri(options)
+        sprintf(AUTHORIZATION_URI, options[:tenant_id])
+      end
+
+      def scope
+        SCOPE
+      end
+
+      def token_credentials_uri(options)
+        sprintf(TOKEN_CREDENTIALS_URI, options[:tenant_id])
       end
     end
   end
