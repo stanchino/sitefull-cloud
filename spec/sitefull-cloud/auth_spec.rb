@@ -1,19 +1,23 @@
 require 'spec_helper'
 require 'shared_examples/auth'
-require 'aws-sdk'
 
 RSpec.describe Sitefull::Cloud::Auth do
   describe Sitefull::Auth::Base do
+    require 'sitefull-cloud/auth/base'
+
+    subject { Sitefull::Auth::Base.new(client_id: 'client_id', client_secret: 'client_secret', base_uri: 'http://localhost/') }
     it { expect { subject.callback_uri }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_CALLBACK_URI) }
   end
 
   describe 'Amazon' do
+    require 'aws-sdk'
+
     before { allow_any_instance_of(Aws::STS::Client).to receive(:assume_role_with_web_identity).and_return(double(credentials: { access_key_id: :access_key_id, secret_access_key: :secret_access_key, session_token: :session_token })) }
     it_behaves_like 'auth provider with invalid options', :amazon, {}
-    it_behaves_like 'auth provider with valid options', :amazon, {role_arn: :role_arn, redirect_uri: 'http://localhost/oauth/amazon/callback'}
-    it_behaves_like 'auth provider with valid options', :amazon, {role_arn: :role_arn, base_uri: 'http://localhost/'}
-    it_behaves_like 'auth provider with valid options', :amazon, {token: '{"access_token": "access_token"}', role_arn: :role_arn, redirect_uri: 'http://localhost/oauth/amazon/callback'}, true
-    it_behaves_like 'auth provider with valid options', :amazon, {token: '{"access_token": "access_token"}', role_arn: :role_arn, base_uri: 'http://localhost/'}, true
+    it_behaves_like 'auth provider with valid options', :amazon, {role_arn: :role_arn, region: 'region', session_name: 'session_id', redirect_uri: 'http://localhost/oauth/amazon/callback'}
+    it_behaves_like 'auth provider with valid options', :amazon, {role_arn: :role_arn, region: 'region', session_name: 'session_id', base_uri: 'http://localhost/'}
+    it_behaves_like 'auth provider with valid options', :amazon, {token: '{"access_token": "access_token"}', region: 'region', role_arn: :role_arn, session_name: 'session_id', redirect_uri: 'http://localhost/oauth/amazon/callback'}, true
+    it_behaves_like 'auth provider with valid options', :amazon, {token: '{"access_token": "access_token"}', region: 'region', role_arn: :role_arn, session_name: 'session_id', base_uri: 'http://localhost/'}, true
   end
 
   describe 'Azure' do

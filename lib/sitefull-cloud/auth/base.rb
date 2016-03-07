@@ -9,12 +9,23 @@ module Sitefull
       MISSING_CLIENT_SECRET = 'Missing Client Secret'.freeze
       MISSING_REDIRECT_URI_SCHEME = 'Redirect URL must be an absolute URL'.freeze
 
+      def initialize(options = {})
+        @options = validate(options)
+      end
+
       def validate(options = {})
         fail MISSING_CLIENT_ID if options[:client_id].to_s.empty?
         fail MISSING_CLIENT_SECRET if options[:client_secret].to_s.empty?
         fail MISSING_REDIRECT_URI_SCHEME if !options[:redirect_uri].to_s.empty? && URI(options[:redirect_uri].to_s).scheme.to_s.empty?
-        options[:redirect_uri] ||= default_redirect_uri(options)
-        options
+        process(options)
+      end
+
+      def token_options
+        @options.select { |k| [:authorization_uri, :client_id, :client_secret, :scope, :token_credential_uri, :redirect_uri].include? k.to_sym }.merge(@options[:token] || {})
+      end
+
+      def authorization_url_options
+        @options.select { |k| [:state, :login_hint, :redirect_uri].include? k.to_sym }
       end
 
       def callback_uri
@@ -22,6 +33,12 @@ module Sitefull
       end
 
       private
+
+      def process(options = {})
+        options[:redirect_uri] ||= default_redirect_uri(options) if options[:token].to_s.empty?
+        options[:token] = JSON.parse options[:token] unless options[:token].to_s.empty?
+        options
+      end
 
       def default_redirect_uri(options)
         fail MISSING_BASE_URI if options[:base_uri].to_s.empty?

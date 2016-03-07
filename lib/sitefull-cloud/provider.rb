@@ -7,9 +7,9 @@ module Sitefull
       attr_reader :type, :options
 
       def initialize(type, options = {})
-        @options = options unless options.nil?
         @type = type || 'base'
         extend(provider_module)
+        @options = respond_to?(:process) ? process(options) : options
       end
 
       class << self
@@ -27,10 +27,14 @@ module Sitefull
         end
       end
 
+      def auth
+        @auth ||= Sitefull::Cloud::Auth.new(type, options)
+      end
+
       protected
 
       def credentials
-        @credentials ||= Sitefull::Cloud::Auth.new(type, options).credentials
+        @credentials ||= auth.credentials
       end
 
       private

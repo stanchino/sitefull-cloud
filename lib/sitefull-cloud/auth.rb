@@ -1,15 +1,14 @@
+require 'signet/oauth_2/client'
 require 'forwardable'
 
 module Sitefull
   module Cloud
     class Auth
       extend Forwardable
-      def_delegators :@provider, :token_options, :authorization_url_options
+      def_delegators :@auth, :token_options, :authorization_url_options
 
-      def initialize(provider_type, options = {})
-        token_set = !options[:token].to_s.empty?
-        token(JSON.parse options[:token]) if token_set
-        @provider = provider_class(provider_type).new(options, token_set)
+      def initialize(auth_type, options = {})
+        @auth = auth_class(auth_type).new(options)
       end
 
       def authorization_url
@@ -21,20 +20,21 @@ module Sitefull
         token.fetch_access_token!
       end
 
-      def token(token_data = nil)
-        @token ||= Signet::OAuth2::Client.new(token_data.nil? ? token_options : token_data)
+      def token
+        @token ||= Signet::OAuth2::Client.new(token_options)
       end
 
       def credentials
+        return @credentials unless @credentials.nil?
         token.refresh!
-        @credentials ||= @provider.credentials(token)
+        @credentials = @auth.credentials(token)
       end
 
       private
 
-      def provider_class(provider_type)
-        require "sitefull-cloud/auth/#{provider_type}"
-        Kernel.const_get "Sitefull::Auth::#{provider_type.capitalize}"
+      def auth_class(auth_type)
+        require "sitefull-cloud/auth/#{auth_type}"
+        Kernel.const_get "Sitefull::Auth::#{auth_type.capitalize}"
       end
     end
   end

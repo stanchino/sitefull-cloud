@@ -1,3 +1,7 @@
+require 'azure_mgmt_compute'
+require 'azure_mgmt_network'
+require 'azure_mgmt_resources'
+
 module Sitefull
   module Provider
     module Azure

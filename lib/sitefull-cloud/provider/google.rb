@@ -18,17 +18,17 @@ module Sitefull
       end
 
       def regions
-        @regions ||= connection.list_zones(project_name).items
+        @regions ||= connection.list_zones(project_name).items.map { |r| OpenStruct.new(id: r.name, name: r.name) }
       end
 
       def machine_types(zone)
-        @machine_types ||= connection.list_machine_types(project_name, zone).items
+        @machine_types ||= connection.list_machine_types(project_name, zone).items.map { |m| OpenStruct.new(id: m.self_link, name: m.name) }
       rescue ::Google::Apis::ClientError
         []
       end
 
       def images(os)
-        @images ||= project_images(project_name) + project_images("#{os}-cloud")
+        @images ||= (project_images(project_name) + project_images("#{os}-cloud")).map { |i| OpenStruct.new(id: i.self_link, name: i.name) }
       end
 
       def create_network

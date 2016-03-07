@@ -7,7 +7,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
   describe 'with type set to Amazon' do
     let(:type) { 'amazon' }
-    let(:options) { { token: '{"access_key": "access_key"}', role_arn: 'role', foo: :bar } }
+    let(:options) { { token: '{"access_key": "access_key"}', client_id: 'client_id', client_secret: 'client_secret', role_arn: 'role', session_name: 'session_id' } }
     let(:vpc_id) { 'vpc-id' }
     let(:route_table_id) { 'route-table-id' }
     let(:group_id) { 'group-id' }
@@ -22,13 +22,8 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
     it_behaves_like 'cloud provider'
 
-    context 'is valid when there is a dry-run exception' do
-      before { allow_any_instance_of(Aws::EC2::Client).to receive(:describe_regions).and_raise(Aws::EC2::Errors::DryRunOperation.new(double, double)) }
-      it { expect(subject.valid?).to be_truthy }
-    end
-
     context 'is not valid when there is an error' do
-      before { allow_any_instance_of(Aws::EC2::Client).to receive(:describe_regions).and_raise(StandardError) }
+      before { expect(Aws::EC2::Client).to receive(:new).and_raise(StandardError) }
       it { expect(subject.valid?).to be_falsey }
     end
 
@@ -46,7 +41,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
   describe 'with type set to Google' do
     let(:project_name) { 'project' }
     let(:type) { 'google' }
-    let(:options) { { token: '{"access_key": "access_key"}', project_name: project_name } }
+    let(:options) { { token: '{"access_key": "access_key"}', client_id: 'client_id', client_secret: 'client_secret', project_name: project_name } }
 
     before do
       allow_any_instance_of(Google::Apis::ComputeV1::ComputeService).to receive(:get_network).with(project_name, 'sitefull-cloud').and_raise(::Google::Apis::ClientError.new('error'))
@@ -76,7 +71,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
   describe 'with type set to Azure' do
     let(:type) { 'azure' }
-    let(:options) { { token: '{"access_key": "access_key"}', role_arn: 'role', foo: :bar } }
+    let(:options) { { token: '{"access_key": "access_key"}', client_id: 'client_id', client_secret: 'client_secret', tenant_id: 'tenant_id', subscription_id: 'subscription_id' } }
     it_behaves_like 'cloud provider'
   end
 
