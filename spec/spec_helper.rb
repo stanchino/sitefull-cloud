@@ -13,6 +13,7 @@ end
 require 'aws-sdk'
 require 'sitefull-cloud'
 require 'support/aws'
+require 'support/azure'
 require 'support/google'
 require 'support/provider_helper'
 

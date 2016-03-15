@@ -71,8 +71,41 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
   describe 'with type set to Azure' do
     let(:type) { 'azure' }
-    let(:options) { { token: '{"access_key": "access_key"}', client_id: 'client_id', client_secret: 'client_secret', tenant_id: 'tenant_id', subscription_id: 'subscription_id' } }
-    it_behaves_like 'cloud provider'
+    let(:options) { { token: '{"access_key": "access_key"}', client_id: 'client_id', client_secret: 'client_secret', tenant_id: 'tenant_id', subscription_id: 'subscription_id', region: 'westus' } }
+    before do
+      allow_any_instance_of(::Azure::ARM::Resources::ResourceManagementClient).to receive_message_chain(:resource_groups, :create_or_update, :value!).and_return(double(body: double(name: 'resource_group')))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:network_security_groups, :create_or_update, :value!).and_return(double(body: double))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:virtual_networks, :create_or_update, :value!).and_return(double(body: double(properties: double(subnets: [double(name: 'subnet')]))))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:security_rules, :create_or_update, :value!).and_return(true)
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:subnets, :get, :value!).and_return(double(body: 'subnet'))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:network_security_groups, :get, :value!).and_return(double(body: 'security_group'))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:public_ipaddresses, :create_or_update, :value!).and_return(double(body: 'public_ip'))
+      allow_any_instance_of(::Azure::ARM::Network::NetworkManagementClient).to receive_message_chain(:network_interfaces, :create_or_update, :value!).and_return(double(body: 'network_interface'))
+      allow_any_instance_of(::Azure::ARM::Compute::ComputeManagementClient).to receive_message_chain(:virtual_machines, :create_or_update, :value!).and_return(double(body: double(name: 'vm')))
+    end
+
+    context 'with existing storage account' do
+      before do
+        allow(subject).to receive(:storage_account_name).with(any_args).and_return 'name'
+        allow_any_instance_of(::Azure::ARM::Storage::StorageManagementClient).to receive_message_chain(:storage_accounts, :list_by_resource_group, :value!).and_return(double(body: double(value: [double(name: 'name')])))
+      end
+
+      it_behaves_like 'cloud provider'
+    end
+
+    context 'with a missing storage account' do
+      before do
+        allow_any_instance_of(::Azure::ARM::Storage::StorageManagementClient).to receive_message_chain(:storage_accounts, :list_by_resource_group, :value!).and_return(double(body: double(value: [])))
+        allow_any_instance_of(::Azure::ARM::Storage::StorageManagementClient).to receive_message_chain(:storage_accounts, :create, :value!).and_return(double(body: double(name: 'name')))
+      end
+
+      it_behaves_like 'cloud provider'
+    end
+
+    context 'is not valid when there is an error' do
+      before { expect(subject).to receive(:connection).and_raise(StandardError) }
+      it { expect(subject.valid?).to be_falsey }
+    end
   end
 
   describe 'returns all required options' do

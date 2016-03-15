@@ -64,6 +64,8 @@ module Sitefull
 
         def add_security_group_rules
           connection.authorize_security_group_ingress(group_id: security_group.group_id, ip_protocol: 'tcp', from_port: 22, to_port: 22, cidr_ip: '0.0.0.0/0')
+          connection.authorize_security_group_ingress(group_id: security_group.group_id, ip_protocol: 'tcp', from_port: 80, to_port: 80, cidr_ip: '0.0.0.0/0')
+          connection.authorize_security_group_ingress(group_id: security_group.group_id, ip_protocol: 'tcp', from_port: 443, to_port: 443, cidr_ip: '0.0.0.0/0')
           add_tags(security_group.group_id)
         end
 

@@ -29,9 +29,8 @@ module Sitefull
       end
 
       def images(os)
-        # IMAGES[os.to_sym]
         filters = [{ name: 'name', values: ["#{os}*", "#{os.downcase}*"] }, { name: 'is-public', values: ['true'] }, { name: 'virtualization-type', values: ['hvm'] }]
-        connection.describe_images(filters: filters).images.map { |i| OpenStruct.new(id: i.image_id, name: i.name) }
+        connection.describe_images(filters: filters).images.select { |i| i.image_owner_alias.nil? }.map { |i| OpenStruct.new(id: i.image_id, name: i.name) }
       end
 
       def create_network

@@ -32,7 +32,7 @@ RSpec.shared_examples 'cloud provider' do
   end
 
   describe 'and creates an instance' do
-    it { expect(subject.create_instance(double(id: :id, region: :region, image: :image, machine_type: :machine_type, network_id: :network_id, key_name: :key_name))).not_to be_nil }
+    it { expect(subject.create_instance(double(id: :id, region: :region, image: 'publisher:offer:image', machine_type: :machine_type, network_id: :network_id, key_name: :key_name))).not_to be_nil }
   end
 
   describe 'lists the required options' do

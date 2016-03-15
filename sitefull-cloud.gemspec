@@ -27,9 +27,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'signet'
   spec.add_dependency 'google-api-client'
   spec.add_dependency 'aws-sdk'
+  spec.add_dependency 'azure'
+  spec.add_dependency 'faraday'
   spec.add_dependency 'azure_mgmt_compute'
-  spec.add_dependency 'azure_mgmt_resources'
   spec.add_dependency 'azure_mgmt_network'
+  spec.add_dependency 'azure_mgmt_resources'
+  spec.add_dependency 'azure_mgmt_storage'
+  spec.add_dependency 'activesupport'
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
