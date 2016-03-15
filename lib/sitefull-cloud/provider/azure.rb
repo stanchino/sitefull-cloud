@@ -89,7 +89,7 @@ module Sitefull
       end
 
       def valid?
-        !connection.empty?
+        !options[:subscription_id].empty? && !connection.empty?
       rescue StandardError
         false
       end
