@@ -69,9 +69,9 @@ module Sitefull
       end
 
       def create_firewall_rules(_)
-        firewall_rule_setup('ssh', protocol: '*', source_port_range: '*', destination_port_range: '22', source_address_prefix: '*', destination_address_prefix: '*', priority: 100, access: 'Allow', direction: 'Inbound').value!
-        firewall_rule_setup('http', protocol: '*', source_port_range: '*', destination_port_range: '80', source_address_prefix: '*', destination_address_prefix: '*', priority: 101, access: 'Allow', direction: 'Inbound').value!
-        firewall_rule_setup('https', protocol: '*', source_port_range: '*', destination_port_range: '443', source_address_prefix: '*', destination_address_prefix: '*', priority: 102, access: 'Allow', direction: 'Inbound').value!
+        inbound_firewall_rule 'ssh', '22', 100
+        inbound_firewall_rule 'http', '80', 101
+        inbound_firewall_rule 'https', '443', 102
       end
 
       def create_key(key_name)

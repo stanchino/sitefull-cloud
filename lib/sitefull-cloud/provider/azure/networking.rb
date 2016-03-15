@@ -49,6 +49,10 @@ module Sitefull
 
           connection.network.security_rules.create_or_update(resource_group_name, SECURITY_GROUP, name, security_rule)
         end
+
+        def inbound_firewall_rule(name, port, priority)
+          firewall_rule_setup(name, protocol: '*', source_port_range: '*', destination_port_range: port, source_address_prefix: '*', destination_address_prefix: '*', priority: priority, access: 'Allow', direction: 'Inbound').value!
+        end
       end
     end
   end
