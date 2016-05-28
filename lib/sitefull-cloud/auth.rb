@@ -5,7 +5,7 @@ module Sitefull
   module Cloud
     class Auth
       extend Forwardable
-      def_delegators :@auth, :token_options, :authorization_url_options
+      def_delegators :@auth, :token_options, :authorization_url_options, :required_settings
 
       def initialize(auth_type, options = {})
         @auth = auth_class(auth_type).new(options)

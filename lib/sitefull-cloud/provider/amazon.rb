@@ -6,11 +6,12 @@ module Sitefull
     module Amazon
       include Networking
 
-      REQUIRED_OPTIONS = %w(role_arn region session_name).freeze
+      REQUIRED_OPTIONS = %w(role_arn session_name).freeze
       MACHINE_TYPES = %w(t2.nano t2.micro t2.small t2.medium t2.large m4.large m4.xlarge m4.2xlarge m4.4xlarge m4.10xlarge m3.medium m3.large m3.xlarge m3.2xlarge).freeze
 
       DEFAULT_REGION = 'us-east-1'.freeze
-      SSH_USER = 'root'.freeze
+      WAIT = 2.freeze
+      INSTANCE_RUNNING_STATE = 'running'.freeze
 
       def process(options = {})
         options[:region] ||= DEFAULT_REGION
@@ -42,8 +43,8 @@ module Sitefull
       end
 
       def create_key(name)
-        connection.import_key_pair(key_name: name, public_key_material: key_data[:public_key])
-        OpenStruct.new(key_data.merge(ssh_user: SSH_USER))
+        connection.import_key_pair(key_name: name, public_key_material: "ssh-rsa #{key_data[:public_key]}")
+        OpenStruct.new(key_data)
       end
 
       def create_firewall_rules
@@ -52,15 +53,25 @@ module Sitefull
 
       # Uses http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#run_instances-instance_method
       def create_instance(_name, machine_type, image, network_id, key)
-        connection.run_instances(image_id: image, instance_type: machine_type,
-                                 subnet_id: network_id, key_name: key.name,
-                                 security_group_ids: [security_group.group_id], min_count: 1, max_count: 1).instances.first.instance_id
+        instance = connection.run_instances(image_id: image, instance_type: machine_type,
+                                            subnet_id: network_id, key_name: key.name,
+                                            security_group_ids: [security_group.group_id], min_count: 1, max_count: 1).instances.first
+        sleep WAIT unless instance(instance.instance_id).state.name == INSTANCE_RUNNING_STATE
+        instance.instance_id
+      end
+
+      def instance_data(instance_id)
+        OpenStruct.new(id: instance_id, public_ip: instance(instance_id).public_ip_address)
       end
 
       def valid?
         !connection.nil?
-      rescue StandardError
-        false
+      end
+
+      private
+
+      def instance(instance_id)
+        connection.describe_instances(instance_ids: [instance_id]).reservations.first.instances.first
       end
     end
   end

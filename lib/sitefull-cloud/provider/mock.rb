@@ -28,6 +28,10 @@ module Sitefull
         'instance-id'
       end
 
+      def instance_data(instance_id)
+        OpenStruct.new(id: instance_id, public_ip: 'public_ip')
+      end
+
       def valid?
         true
       end

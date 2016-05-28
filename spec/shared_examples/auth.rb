@@ -43,5 +43,9 @@ RSpec.shared_examples 'auth provider with valid options' do |provider, options, 
       before { expect_any_instance_of(Signet::OAuth2::Client).to receive(:refresh!) }
       it { expect(subject.credentials).not_to be_nil }
     end
+
+    context 'exposes the required settings' do
+      it { expect(subject.required_settings).to match_array(required_settings) }
+    end
   end
 end

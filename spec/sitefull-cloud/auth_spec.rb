@@ -24,11 +24,17 @@ RSpec.describe Sitefull::Cloud::Auth do
       let(:options) { { client_id: 'client_id', client_secret: 'client_secret', redirect_uri: 'http://localhost/oauth/base/callback', authorization_uri: 'http://auth', scope: 'scope' } }
       it { expect { Sitefull::Auth::Base.new(options) }.to raise_error(RuntimeError, Sitefull::Auth::Base::MISSING_TOKEN_CREDENTIALS_URI) }
     end
+
+    context 'with skip validation set to true' do
+      let(:options) { { validate: false } }
+      it { expect { Sitefull::Auth::Base.new(options).not_to raise_error } }
+    end
   end
 
   describe 'Amazon' do
     require 'aws-sdk'
 
+    let(:required_settings) { [:client_id, :client_secret] }
     before { allow_any_instance_of(Aws::STS::Client).to receive(:assume_role_with_web_identity).and_return(double(credentials: { access_key_id: :access_key_id, secret_access_key: :secret_access_key, session_token: :session_token })) }
     it_behaves_like 'auth provider with invalid options', :amazon, {}
     it_behaves_like 'auth provider with valid options', :amazon, {role_arn: :role_arn, region: 'region', session_name: 'session_id', redirect_uri: 'http://localhost/oauth/amazon/callback'}
@@ -40,6 +46,7 @@ RSpec.describe Sitefull::Cloud::Auth do
   describe 'Azure' do
     require 'sitefull-cloud/auth/azure'
 
+    let(:required_settings) { [:client_id, :client_secret, :tenant_id] }
     it { expect { Sitefull::Cloud::Auth.new(:azure) }.to raise_error(RuntimeError, Sitefull::Auth::Azure::MISSING_TENANT_ID) }
     it_behaves_like 'auth provider with invalid options', :azure, {tenant_id: :tenant_id}
     it_behaves_like 'auth provider with valid options', :azure, {tenant_id: :tenant_id, redirect_uri: 'http://localhost/oauth/azure/callback'}
@@ -49,6 +56,7 @@ RSpec.describe Sitefull::Cloud::Auth do
   end
 
   describe 'Google' do
+    let(:required_settings) { [:client_id, :client_secret] }
     it_behaves_like 'auth provider with invalid options', :google, {}
     it_behaves_like 'auth provider with valid options', :google, {redirect_uri: 'http://localhost/oauth/google/callback'}
     it_behaves_like 'auth provider with valid options', :google, {base_uri: 'http://localhost/'}

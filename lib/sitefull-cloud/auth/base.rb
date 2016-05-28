@@ -13,7 +13,7 @@ module Sitefull
       MISSING_TOKEN_CREDENTIALS_URI = 'Missing Token Credentials URL'.freeze
 
       def initialize(options = {})
-        @options = validate(options)
+        @options = validate(options) if options[:validate].to_s.empty? || options[:validate]
       end
 
       def validate(options = {})
@@ -46,6 +46,11 @@ module Sitefull
       def token_credentials_uri(_)
         fail MISSING_TOKEN_CREDENTIALS_URI
       end
+
+      def required_settings
+        [:client_id, :client_secret]
+      end
+
       private
 
       def process(options = {})

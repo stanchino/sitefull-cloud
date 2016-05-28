@@ -16,4 +16,9 @@ RSpec.describe Sitefull::Cloud::Provider do
     before { expect(Google::Apis::ComputeV1::ComputeService).not_to receive(:new) }
     it_behaves_like 'mocked cloud provider'
   end
+
+  context 'for Azure' do
+    let(:type) { :azure }
+    it_behaves_like 'mocked cloud provider'
+  end
 end

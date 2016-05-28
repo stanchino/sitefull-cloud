@@ -44,6 +44,10 @@ module Sitefull
       def token_credentials_uri(options)
         sprintf(TOKEN_CREDENTIALS_URI, options[:tenant_id])
       end
+
+      def required_settings
+        super << :tenant_id
+      end
     end
   end
 end

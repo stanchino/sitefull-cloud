@@ -2,7 +2,7 @@ module Sitefull
   module Provider
     module Amazon
       module Networking
-        TEMPLATE_TAG = 'SiteFull Deployment'.freeze
+        TEMPLATE_TAG = 'SiteFull Deployments'.freeze
         VPC_CIDR_BLOCK = '172.16.0.0/16'.freeze
         SUBNET_CIDR_BLOCK = '172.16.1.0/24'.freeze
 
@@ -43,6 +43,8 @@ module Sitefull
         def create_vpc
           vpc = connection.create_vpc(cidr_block: VPC_CIDR_BLOCK).vpc
           add_tags(vpc.vpc_id)
+          connection.modify_vpc_attribute(vpc_id: vpc.vpc_id, enable_dns_support: { value: true })
+          connection.modify_vpc_attribute(vpc_id: vpc.vpc_id, enable_dns_hostnames: { value: true })
           vpc
         end
 

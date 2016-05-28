@@ -40,6 +40,12 @@ RSpec.shared_examples 'cloud provider' do
     it { expect(subject.class.required_options_for(type)).to match_array expected }
   end
 
+  describe 'returns the instance data' do
+    it { expect(subject.instance_data(any_args)).to be_a OpenStruct }
+    it { expect(subject.instance_data(any_args).id).not_to be_nil }
+    it { expect(subject.instance_data(any_args).public_ip).not_to be_nil }
+  end
+
   describe 'without type' do
     let(:type) { nil }
     let(:options) { nil }
@@ -65,5 +71,7 @@ RSpec.shared_examples 'mocked cloud provider' do
   it { expect { subject.create_key(any_args) }.not_to raise_error }
   it { expect { subject.create_firewall_rules }.not_to raise_error }
   it { expect { subject.create_instance(any_args, any_args, any_args, any_args, any_args) }.not_to raise_error }
+  it { expect { subject.instance_data(any_args) }.not_to raise_error }
   it { expect { subject.valid? }.not_to raise_error }
+  it { expect(subject.instance_data(any_args)).to be_a OpenStruct }
 end

@@ -1,10 +1,13 @@
 require 'google/apis/compute_v1'
+Google::Apis::RequestOptions.default.retries = 5
 
 module Sitefull
   module Provider
     module Google
-      REQUIRED_OPTIONS = %w(project_name region).freeze
-      SSH_USER = 'sitefull'.freeze
+      REQUIRED_OPTIONS = %w(project_name).freeze
+
+      WAIT = 2.freeze
+      INSTANCE_RUNNING_STATE = 'RUNNING'.freeze
 
       def connection
         return @connection unless @connection.nil?
@@ -46,7 +49,7 @@ module Sitefull
       end
 
       def create_key(_)
-        OpenStruct.new(ssh_user: SSH_USER, private_key: '', public_key: 'AAAAB3NzaC1yc2EAAAABIwAAAQEA5MPo246Yx/62kTd4omlEj2TiJ2qUV23lE3Y7Ny6j8x0vwqnpjq6njhAcwrW1vSA4P2T7Z9d+UyFvg8RX61JDTw1GSePeeyKDumJUYgVl74BoZnGly1Fe1lzIQZbChSfhNcnzTmdEIoSr89WxAVcHr4XA1RuKjOXSbfmQoH5tKVdfY81XYp1EdGe8mqzDA1QnWBMzlLNkv0MiiQ06U8WA7iyxqWydsoXvRnoGPahOVS4SvSc1BuJ3nuIoJRa/FmCczkHsAAEyodcpzDmqDTJsyusLLuduScXFzmmcLtGU3vH1VucPvEpNaW1VLqb2Or2l1eXnpa71cIbmoUeaZ12+jw==')
+        OpenStruct.new(key_data)
       end
 
       def create_instance(name, machine_type, image, network_id, key)
@@ -55,12 +58,16 @@ module Sitefull
                                                            network_interfaces: [{ network: network_id, access_configs: [{ name: 'default' }] }],
                                                            metadata: { items: [{ key: 'ssh-keys', value: "#{key.ssh_user}:ssh-rsa #{key.public_key} #{key.ssh_user}"}] })
         connection.insert_instance(project_name, options[:region], instance).target_link
+        sleep WAIT unless instance(name).status == INSTANCE_RUNNING_STATE
+        name
+      end
+
+      def instance_data(instance_id)
+        OpenStruct.new(id: instance_id, public_ip: instance(instance_id).network_interfaces.first.access_configs.first.nat_ip)
       end
 
       def valid?
         regions.any?
-      rescue StandardError
-        false
       end
 
       private
@@ -71,16 +78,25 @@ module Sitefull
       end
 
       def create_firewall_rule(network_id, rule_name, port)
+        return if firewall_rule_exists?(rule_name)
         rule = ::Google::Apis::ComputeV1::Firewall.new(name: rule_name, source_ranges: ['0.0.0.0/0'], network: network_id, allowed: [{ ip_protocol: 'tcp', ports: [port] }])
         connection.insert_firewall(project_name, rule)
+      end
+
+      def firewall_rule_exists?(rule_name)
+        connection.get_firewall(project_name, rule_name)
       rescue ::Google::Apis::ClientError
-        nil
+        false
       end
 
       def network_id
         @network ||= connection.get_network(project_name, 'sitefull-cloud').self_link
       rescue ::Google::Apis::ClientError
         nil
+      end
+
+      def instance(instance_id)
+        connection.get_instance(project_name, options[:region], instance_id)
       end
     end
   end
