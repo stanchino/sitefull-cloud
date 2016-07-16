@@ -26,7 +26,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
     context 'is not valid when there is an error' do
       before { expect(Aws::EC2::Client).to receive(:new).and_raise(StandardError) }
-      it { expect { subject.valid? }.to raise_error }
+      it { expect { subject.valid? }.to raise_error(StandardError) }
     end
 
     context 'with existing network gateway' do
@@ -63,7 +63,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
     context 'is not valid when there is an error' do
       before { expect(subject).to receive(:regions).and_raise(StandardError) }
-      it { expect { subject.valid? }.to raise_error }
+      it { expect { subject.valid? }.to raise_error(StandardError) }
     end
   end
 
@@ -104,7 +104,7 @@ RSpec.describe Sitefull::Cloud::Provider, type: :provider do
 
     context 'is not valid when there is an error' do
       before { expect(subject).to receive(:connection).and_raise(MsRestAzure::AzureOperationError.new(double, double(body: { error: { message: 'message' } }.to_json))) }
-      it { expect { subject.valid? }.to raise_error }
+      it { expect { subject.valid? }.to raise_error(StandardError) }
     end
   end
 
