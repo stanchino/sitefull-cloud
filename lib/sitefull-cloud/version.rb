@@ -1,5 +1,5 @@
 module Sitefull
   module Cloud
-    VERSION = '0.1'
+    VERSION = '0.2'
   end
 end
