@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sitefull-cloud (0.2)
+    sitefull-cloud (0.3)
       activesupport
       aws-sdk
       azure
@@ -175,6 +175,9 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   sitefull-cloud!
+
+RUBY VERSION
+   ruby 2.4.0p0
 
 BUNDLED WITH
    1.14.4
