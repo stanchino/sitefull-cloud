@@ -1,6 +1,6 @@
 language: ruby
 cache: bundler
-rvm: 2.3.0
+rvm: 2.4.0
 before_install: gem install bundler
 addons:
   code_climate:
