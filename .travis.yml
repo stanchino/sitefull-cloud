@@ -5,3 +5,5 @@ before_install: gem install bundler
 addons:
   code_climate:
     repo_token: '5b33c2db6d7771f6f1477ca18e5d4f2ae577f35ced6916cf9e5bec045d095b64'
+after_success:
+  - bundle exec codeclimate-test-reporter
